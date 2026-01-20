@@ -56,42 +56,47 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 40px 20px;
+            padding: 40px 20px 40px 20px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
         }
         
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
+            margin-top: 20px;
             background: linear-gradient(135deg, var(--accent), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            padding: 0 60px;
         }
         
         .header p {
             color: var(--light-gray);
-            font-size: 1.1rem;
+            font-size: 1rem;
+            padding: 0 60px;
         }
 
         .btn-help {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid var(--accent);
             color: var(--accent);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'IBM Plex Sans', sans-serif;
+            z-index: 10;
         }
 
         .btn-help:hover {
@@ -99,6 +104,45 @@
             color: var(--dark);
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0, 255, 202, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 50px 15px 30px 15px;
+            }
+
+            .btn-help {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+                margin-top: 0;
+                padding: 0 10px;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header p {
+                font-size: 0.85rem;
+            }
+
+            .btn-help {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
         }
 
         .config-section {
