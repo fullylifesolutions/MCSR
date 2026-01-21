@@ -827,6 +827,7 @@
         }
 
         function aggiornaSelects() {
+            console.log('Aggiornamento selects con aziende:', aziende);
             // Popola aziende
             const azSelect = document.getElementById('aziendaSelect');
             azSelect.innerHTML = '<option value="">Seleziona azienda...</option>';
@@ -835,6 +836,7 @@
                 opt.value = az;
                 opt.textContent = az;
                 azSelect.appendChild(opt);
+                console.log('Aggiunta azienda al dropdown:', az);
             });
             if (config.azienda) azSelect.value = config.azienda;
             
@@ -862,39 +864,157 @@
 
         // === GESTIONE LISTE ===
         function gestioneListe() {
-            const choice = prompt('Gestisci:\n\n1 - Aziende\n2 - Divisioni\n\nInserisci 1 o 2:');
-            if (choice === '1') {
-                gestioneAziende();
-            } else if (choice === '2') {
-                gestioneDivisioni();
+            const choice = prompt('=== GESTISCI LISTE ===\n\n1 - Aggiungi Azienda\n2 - Rimuovi Azienda\n3 - Visualizza Aziende\n4 - Gestisci Divisioni\n\nInserisci numero (1-4):');
+            
+            if (choice === '1') aggiungiAzienda();
+            else if (choice === '2') rimuoviAzienda();
+            else if (choice === '3') visualizzaAziende();
+            else if (choice === '4') gestioneDivisioni();
+        }
+
+        function aggiungiAzienda() {
+            const nuovaAzienda = prompt('=== AGGIUNGI AZIENDA ===\n\nInserisci il nome della nuova azienda:');
+            if (nuovaAzienda && nuovaAzienda.trim()) {
+                const nome = nuovaAzienda.trim();
+                if (aziende.includes(nome)) {
+                    alert('⚠️ Azienda già presente!');
+                    return;
+                }
+                aziende.push(nome);
+                localStorage.setItem('aziende', JSON.stringify(aziende));
+                aggiornaSelects();
+                alert(`✅ Azienda "${nome}" aggiunta!\n\nTotale aziende: ${aziende.length}`);
             }
         }
 
-        function gestioneAziende() {
-            const current = aziende.join('\n');
-            const newList = prompt('=== GESTISCI AZIENDE ===\n\nUna per riga:\n\n', current);
-            if (newList !== null) {
-                aziende = newList.split('\n').map(a => a.trim()).filter(a => a);
-                localStorage.setItem('aziende', JSON.stringify(aziende));
-                aggiornaSelects();
-                alert('✅ Aziende aggiornate!');
+        function rimuoviAzienda() {
+            if (aziende.length === 0) {
+                alert('⚠️ Nessuna azienda da rimuovere');
+                return;
             }
+            
+            let elenco = '=== RIMUOVI AZIENDA ===\n\n';
+            aziende.forEach((az, i) => {
+                elenco += `${i + 1}. ${az}\n`;
+            });
+            elenco += '\nInserisci il numero dell\'azienda da rimuovere:';
+            
+            const scelta = prompt(elenco);
+            if (scelta) {
+                const index = parseInt(scelta) - 1;
+                if (index >= 0 && index < aziende.length) {
+                    const rimossa = aziende[index];
+                    
+                    // Rimuovi anche le divisioni associate
+                    if (divisioni[rimossa]) {
+                        delete divisioni[rimossa];
+                        localStorage.setItem('divisioni', JSON.stringify(divisioni));
+                    }
+                    
+                    aziende.splice(index, 1);
+                    localStorage.setItem('aziende', JSON.stringify(aziende));
+                    aggiornaSelects();
+                    alert(`✅ Azienda "${rimossa}" rimossa!\n\nTotale aziende: ${aziende.length}`);
+                } else {
+                    alert('⚠️ Numero non valido');
+                }
+            }
+        }
+
+        function visualizzaAziende() {
+            if (aziende.length === 0) {
+                alert('📋 AZIENDE\n\nNessuna azienda configurata');
+                return;
+            }
+            
+            let elenco = '📋 AZIENDE CONFIGURATE\n\n';
+            aziende.forEach((az, i) => {
+                const numDiv = divisioni[az] ? divisioni[az].length : 0;
+                elenco += `${i + 1}. ${az} (${numDiv} divisioni)\n`;
+            });
+            elenco += `\nTotale: ${aziende.length} aziende`;
+            
+            alert(elenco);
         }
 
         function gestioneDivisioni() {
             const azienda = document.getElementById('aziendaSelect').value;
             if (!azienda) {
-                alert('⚠️ Seleziona prima un\'azienda');
+                alert('⚠️ Seleziona prima un\'azienda dal dropdown');
                 return;
             }
-            const current = divisioni[azienda] ? divisioni[azienda].join('\n') : '';
-            const newList = prompt(`=== DIVISIONI PER ${azienda.toUpperCase()} ===\n\nUna per riga:\n\n`, current);
-            if (newList !== null) {
-                divisioni[azienda] = newList.split('\n').map(d => d.trim()).filter(d => d);
+            
+            const choice = prompt(`=== DIVISIONI PER ${azienda.toUpperCase()} ===\n\n1 - Aggiungi Divisione\n2 - Rimuovi Divisione\n3 - Visualizza Divisioni\n\nInserisci numero (1-3):`);
+            
+            if (choice === '1') aggiungiDivisione(azienda);
+            else if (choice === '2') rimuoviDivisione(azienda);
+            else if (choice === '3') visualizzaDivisioni(azienda);
+        }
+
+        function aggiungiDivisione(azienda) {
+            const nuovaDivisione = prompt(`=== AGGIUNGI DIVISIONE ===\n\nAzienda: ${azienda}\n\nInserisci il nome della nuova divisione:`);
+            if (nuovaDivisione && nuovaDivisione.trim()) {
+                const nome = nuovaDivisione.trim();
+                
+                if (!divisioni[azienda]) divisioni[azienda] = [];
+                
+                if (divisioni[azienda].includes(nome)) {
+                    alert('⚠️ Divisione già presente!');
+                    return;
+                }
+                
+                divisioni[azienda].push(nome);
                 localStorage.setItem('divisioni', JSON.stringify(divisioni));
                 aggiornaDivisioni();
-                alert('✅ Divisioni aggiornate!');
+                alert(`✅ Divisione "${nome}" aggiunta!\n\nTotale divisioni per ${azienda}: ${divisioni[azienda].length}`);
             }
+        }
+
+        function rimuoviDivisione(azienda) {
+            if (!divisioni[azienda] || divisioni[azienda].length === 0) {
+                alert('⚠️ Nessuna divisione da rimuovere');
+                return;
+            }
+            
+            let elenco = `=== RIMUOVI DIVISIONE ===\n\nAzienda: ${azienda}\n\n`;
+            divisioni[azienda].forEach((div, i) => {
+                elenco += `${i + 1}. ${div}\n`;
+            });
+            elenco += '\nInserisci il numero della divisione da rimuovere:';
+            
+            const scelta = prompt(elenco);
+            if (scelta) {
+                const index = parseInt(scelta) - 1;
+                if (index >= 0 && index < divisioni[azienda].length) {
+                    const rimossa = divisioni[azienda][index];
+                    divisioni[azienda].splice(index, 1);
+                    
+                    if (divisioni[azienda].length === 0) {
+                        delete divisioni[azienda];
+                    }
+                    
+                    localStorage.setItem('divisioni', JSON.stringify(divisioni));
+                    aggiornaDivisioni();
+                    alert(`✅ Divisione "${rimossa}" rimossa!\n\nTotale divisioni per ${azienda}: ${divisioni[azienda] ? divisioni[azienda].length : 0}`);
+                } else {
+                    alert('⚠️ Numero non valido');
+                }
+            }
+        }
+
+        function visualizzaDivisioni(azienda) {
+            if (!divisioni[azienda] || divisioni[azienda].length === 0) {
+                alert(`📋 DIVISIONI\n\nAzienda: ${azienda}\n\nNessuna divisione configurata`);
+                return;
+            }
+            
+            let elenco = `📋 DIVISIONI\n\nAzienda: ${azienda}\n\n`;
+            divisioni[azienda].forEach((div, i) => {
+                elenco += `${i + 1}. ${div}\n`;
+            });
+            elenco += `\nTotale: ${divisioni[azienda].length} divisioni`;
+            
+            alert(elenco);
         }
 
         // === APPLICAZIONE FILTRI ===
