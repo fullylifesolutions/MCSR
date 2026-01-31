@@ -420,6 +420,174 @@
             color: var(--light-gray);
         }
 
+        /* Cruscotti Dimensioni */
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-section h3 {
+            color: var(--accent);
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .dimension-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dimension-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dimension-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .dimension-score {
+            font-size: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .dimension-label {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        /* Colori per livelli */
+        .level-critico {
+            border-left-color: #C70039;
+        }
+        .level-critico .dimension-header {
+            color: #C70039;
+        }
+        .level-critico .dimension-score {
+            color: #C70039;
+        }
+        .level-critico .dimension-label {
+            background: #C70039;
+            color: white;
+        }
+
+        .level-scarso {
+            border-left-color: #FF5757;
+        }
+        .level-scarso .dimension-header {
+            color: #FF5757;
+        }
+        .level-scarso .dimension-score {
+            color: #FF5757;
+        }
+        .level-scarso .dimension-label {
+            background: #FF5757;
+            color: white;
+        }
+
+        .level-sufficiente {
+            border-left-color: #FFB800;
+        }
+        .level-sufficiente .dimension-header {
+            color: #FFB800;
+        }
+        .level-sufficiente .dimension-score {
+            color: #FFB800;
+        }
+        .level-sufficiente .dimension-label {
+            background: #FFB800;
+            color: var(--dark);
+        }
+
+        .level-buono {
+            border-left-color: #FFE135;
+        }
+        .level-buono .dimension-header {
+            color: #FFE135;
+        }
+        .level-buono .dimension-score {
+            color: #FFE135;
+        }
+        .level-buono .dimension-label {
+            background: #FFE135;
+            color: var(--dark);
+        }
+
+        .level-molto-buono {
+            border-left-color: #92D050;
+        }
+        .level-molto-buono .dimension-header {
+            color: #92D050;
+        }
+        .level-molto-buono .dimension-score {
+            color: #92D050;
+        }
+        .level-molto-buono .dimension-label {
+            background: #92D050;
+            color: var(--dark);
+        }
+
+        .level-eccellente {
+            border-left-color: #00D9A5;
+        }
+        .level-eccellente .dimension-header {
+            color: #00D9A5;
+        }
+        .level-eccellente .dimension-score {
+            color: #00D9A5;
+        }
+        .level-eccellente .dimension-label {
+            background: #00D9A5;
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .dimensions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dimension-score {
+                font-size: 2.5rem;
+            }
+        }
+
         .info-box {
             background: rgba(255, 255, 255, 0.05);
             padding: 20px;
@@ -531,6 +699,50 @@
                     <div class="stat-label">⚠️ Aree Critiche</div>
                     <div class="stat-value" id="criticalAreas">0</div>
                 </div>
+            </div>
+
+            <!-- Cruscotto Punteggio Complessivo Divisione -->
+            <div class="dashboard-section" id="overallDashboard" style="display: none;">
+                <h3>🎯 Punteggio Complessivo Divisione</h3>
+                <div style="text-align: center; padding: 30px;">
+                    <div style="color: var(--secondary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+                        Punteggio Complessivo
+                    </div>
+                    <div id="overallScoreDisplay" style="font-size: 4rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; margin: 20px 0;">
+                        3.11
+                    </div>
+                    <div id="overallLevelDisplay" style="display: inline-block;">
+                        <span class="dimension-label">SUFFICIENTE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cruscotto Dimensioni Divisione -->
+            <div class="dashboard-section" id="dimensionsDashboard" style="display: none;">
+                <h3>📊 Punteggi per Dimensione - Divisione</h3>
+                <div class="dimensions-grid" id="dimensionsGrid"></div>
+            </div>
+
+            <!-- Cruscotto Punteggio Complessivo Aziendale -->
+            <div class="dashboard-section" id="companyOverallDashboard" style="display: none;">
+                <h3>🏢 Punteggio Complessivo Aziendale</h3>
+                <div style="text-align: center; padding: 30px;">
+                    <div style="color: var(--secondary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+                        Punteggio Complessivo
+                    </div>
+                    <div id="companyOverallScoreDisplay" style="font-size: 4rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; margin: 20px 0;">
+                        0.00
+                    </div>
+                    <div id="companyOverallLevelDisplay" style="display: inline-block;">
+                        <span class="dimension-label">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cruscotto Dimensioni Azienda -->
+            <div class="dashboard-section" id="companyDimensionsDashboard" style="display: none;">
+                <h3>🏢 Punteggi per Dimensione - Azienda</h3>
+                <div class="dimensions-grid" id="companyDimensionsGrid"></div>
             </div>
 
             <div class="chart-section">
@@ -1156,8 +1368,116 @@
             
             document.getElementById('criticalAreas').textContent = scores.filter(s => s.score < 3.0).length;
             
+            // Popola cruscotti divisione
+            mostraCruscottoDivisione(avg, scores);
+            
+            // Popola cruscotti azienda
+            mostraCruscottoAzienda();
+            
             creaRadar(scores);
             mostraLista();
+        }
+
+        // === CRUSCOTTI VISUALI ===
+        function mostraCruscottoDivisione(overallScore, dimensionScores) {
+            // Mostra sezioni
+            document.getElementById('overallDashboard').style.display = 'block';
+            document.getElementById('dimensionsDashboard').style.display = 'block';
+            
+            // Punteggio complessivo
+            const level = getLevelInfo(overallScore);
+            document.getElementById('overallScoreDisplay').textContent = overallScore.toFixed(2);
+            document.getElementById('overallScoreDisplay').style.color = getColor(overallScore);
+            document.getElementById('overallLevelDisplay').innerHTML = `<span class="dimension-label level-${level.className}">${level.label}</span>`;
+            
+            // Dimensioni
+            const grid = document.getElementById('dimensionsGrid');
+            grid.innerHTML = '';
+            
+            dimensionScores.forEach(dim => {
+                const levelInfo = getLevelInfo(dim.score);
+                const card = document.createElement('div');
+                card.className = `dimension-card level-${levelInfo.className}`;
+                card.innerHTML = `
+                    <div class="dimension-header">${dim.code}: ${dim.dimension}</div>
+                    <div class="dimension-score">${dim.score.toFixed(2)}</div>
+                    <div class="dimension-label">${levelInfo.label}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function mostraCruscottoAzienda() {
+            // Raccogli tutti i questionari dell'azienda per il periodo
+            const periodo = `${config.anno}-${config.mese}`;
+            let allResponses = [];
+            
+            Object.keys(storage).forEach(key => {
+                const [az, div, per] = key.split('|');
+                if (az === config.azienda && per === periodo && storage[key].length > 0) {
+                    allResponses = allResponses.concat(storage[key]);
+                }
+            });
+            
+            if (allResponses.length === 0) {
+                document.getElementById('companyOverallDashboard').style.display = 'none';
+                document.getElementById('companyDimensionsDashboard').style.display = 'none';
+                return;
+            }
+            
+            // Mostra sezioni
+            document.getElementById('companyOverallDashboard').style.display = 'block';
+            document.getElementById('companyDimensionsDashboard').style.display = 'block';
+            
+            // Calcola punteggio complessivo aziendale
+            const avgCompany = allResponses.reduce((sum, r) => sum + r.overallScore, 0) / allResponses.length;
+            
+            // Calcola medie dimensioni aziendali
+            const dims = {};
+            allResponses.forEach(r => {
+                r.scores.forEach(s => {
+                    if (!dims[s.dimension]) dims[s.dimension] = { total: 0, count: 0, code: s.code };
+                    dims[s.dimension].total += s.score;
+                    dims[s.dimension].count++;
+                });
+            });
+            
+            const companyScores = Object.keys(dims).map(d => ({
+                dimension: d,
+                code: dims[d].code,
+                score: dims[d].total / dims[d].count
+            })).sort((a,b) => a.code.localeCompare(b.code));
+            
+            // Punteggio complessivo aziendale
+            const levelCompany = getLevelInfo(avgCompany);
+            document.getElementById('companyOverallScoreDisplay').textContent = avgCompany.toFixed(2);
+            document.getElementById('companyOverallScoreDisplay').style.color = getColor(avgCompany);
+            document.getElementById('companyOverallLevelDisplay').innerHTML = `<span class="dimension-label level-${levelCompany.className}">${levelCompany.label}</span>`;
+            
+            // Dimensioni aziendali
+            const gridCompany = document.getElementById('companyDimensionsGrid');
+            gridCompany.innerHTML = '';
+            
+            companyScores.forEach(dim => {
+                const levelInfo = getLevelInfo(dim.score);
+                const card = document.createElement('div');
+                card.className = `dimension-card level-${levelInfo.className}`;
+                card.innerHTML = `
+                    <div class="dimension-header">${dim.code}: ${dim.dimension}</div>
+                    <div class="dimension-score">${dim.score.toFixed(2)}</div>
+                    <div class="dimension-label">${levelInfo.label}</div>
+                `;
+                gridCompany.appendChild(card);
+            });
+        }
+
+        function getLevelInfo(score) {
+            if (score < 2.5) return { label: 'CRITICO', className: 'critico' };
+            if (score < 3.0) return { label: 'SCARSO', className: 'scarso' };
+            if (score < 3.5) return { label: 'SUFFICIENTE', className: 'sufficiente' };
+            if (score < 4.0) return { label: 'BUONO', className: 'buono' };
+            if (score < 4.5) return { label: 'MOLTO BUONO', className: 'molto-buono' };
+            return { label: 'ECCELLENTE', className: 'eccellente' };
         }
 
         function creaRadar(scores) {
